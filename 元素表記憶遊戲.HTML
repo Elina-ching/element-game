@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>元素小花雨 V3.1｜國中／高中／全元素 + 音效版</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: #f5f1ff;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      color: #333;
+    }
+    .app {
+      width: 100%;
+      max-width: 480px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* ========= 標題 ========= */
+    .title-box {
+      text-align: center;
+      margin-top: 4px;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #7b2fa0;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: #777;
+      margin-top: 2px;
+    }
+
+    /* ========= 選項列 ========= */
+    .select-row {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .select-row.right {
+      justify-content: flex-end;
+    }
+    .select-row.space-between {
+      justify-content: space-between;
+    }
+
+    select, .toggle-btn {
+      padding: 6px 8px;
+      border-radius: 12px;
+      border: 1px solid #d4c9f0;
+      background: #fff;
+      font-size: 13px;
+    }
+
+    .toggle-btn {
+      cursor: pointer;
+      background: #eee5ff;
+      border-color: #c5b4ef;
+      min-width: 40px;
+      text-align: center;
+    }
+    .toggle-btn.active {
+      background: #a03aef;
+      color: #fff;
+      border-color: #7b1ed3;
+    }
+
+    button.start-btn {
+      padding: 8px 16px;
+      border-radius: 16px;
+      border: none;
+      background: #a03a6f;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* ========= 掉落區 ========= */
+    .fall-area {
+      position: relative;
+      height: 42vh;
+      min-height: 240px;
+      border-radius: 16px;
+      background: radial-gradient(circle at top,
+          #ffeefe 0, #f7f3ff 40%, #e7e6ff 100%);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+      overflow: hidden;
+    }
+
+    .fall-petal {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      border-radius: 70%;
+      background: radial-gradient(circle at 20% 15%,
+          #fff2fb 0, #f7b8dd 60%, #f58ec4 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      color: #5b1033;
+      font-size: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+    }
+    .fall-num { font-size: 10px; opacity: 0.8; }
+
+    .fall-lose-line {
+      position: absolute;
+      bottom: 40px;
+      width: 100%;
+      height: 2px;
+      background: rgba(220,20,60,0.75);
+    }
+    .fall-lose-label {
+      position: absolute;
+      bottom: 42px;
+      right: 8px;
+      background: rgba(255,255,255,0.9);
+      padding: 2px 6px;
+      font-size: 10px;
+      border-radius: 999px;
+      color: #b00020;
+    }
+
+    /* 錯誤球 */
+    .miss-bar {
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 4px;
+      background: rgba(255,255,255,0.85);
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 10px;
+      align-items: center;
+    }
+    .miss-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #ffb3c1;
+    }
+    .miss-dot.used { background: #d7263d; }
+
+    /* ========= 結束畫面 ========= */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.46);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 14px;
+    }
+    .overlay button {
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: none;
+      background: #a03a6f;
+      color: #fff;
+      margin-top: 10px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* ========= 週期表鍵盤 ========= */
+    .table-area {
+      background: #fff;
+      padding: 8px;
+      border-radius: 14px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+    .table-grid {
+      display: grid;
+      grid-template-columns: repeat(18, minmax(20px, 1fr));
+      gap: 2px;
+    }
+    .element-cell {
+      border-radius: 6px;
+      min-height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .has-element {
+      cursor: pointer;
+      background: #faf8ff;
+      border: 1px solid #ded8ff;
+    }
+
+    .correct { animation: flashC 0.35s; }
+    .wrong { animation: flashW 0.35s; }
+
+    @keyframes flashC {
+      from { box-shadow: 0 0 0 0 rgba(76,175,80,0.4); }
+      to   { box-shadow: 0 0 0 6px rgba(76,175,80,0); }
+    }
+    @keyframes flashW {
+      from { box-shadow: 0 0 0 0 rgba(244,67,54,0.4); }
+      to   { box-shadow: 0 0 0 6px rgba(244,67,54,0); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- ====== 標題 ====== -->
+    <div class="title-box">
+      <div class="title">元素小花雨 V3.1</div>
+      <div class="subtitle">國中／高中／全元素 + 音效版</div>
+    </div>
+
+    <!-- ====== 學習範圍 ====== -->
+    <div class="select-row">
+      <span>學習範圍：</span>
+      <select id="rangeSelect">
+        <option value="junior">國中</option>
+        <option value="senior">高中</option>
+        <option value="full">全元素</option>
+      </select>
+    </div>
+
+    <!-- ====== 遊戲速度 ====== -->
+    <div class="select-row">
+      <span>速度：</span>
+      <select id="speedSelect">
+        <option value="slow">慢</option>
+        <option value="normal" selected>中</option>
+        <option value="fast">快</option>
+      </select>
+    </div>
+
+    <!-- ====== 音效 + 開始 ====== -->
+    <div class="select-row space-between">
+      <div class="select-row">
+        <span>音效：</span>
+        <button id="soundToggle" class="toggle-btn active">開</button>
+      </div>
+      <button id="startBtn" class="start-btn">開始遊戲</button>
+    </div>
+
+    <!-- ====== 記分版 ====== -->
+    <div class="select-row space-between">
+      <div>得分： <span id="score">0</span></div>
+      <div>錯誤上限： <span id="missLimit">0</span></div>
+      <div>目前錯誤： <span id="missCount">0</span></div>
+    </div>
+
+    <!-- ====== 掉落區 ====== -->
+    <div class="fall-area" id="fallArea">
+      <div class="fall-lose-line"></div>
+      <div class="fall-lose-label">掉到這裡 = 錯誤</div>
+
+      <div class="miss-bar" id="missBar">
+        <span style="color:#b00020;">錯誤球：</span>
+      </div>
+
+      <div class="overlay" id="overlay">
+        <h1>準備開始</h1>
+        <p>選擇學習範圍與速度後開始遊戲</p>
+        <button id="overlayStart">開始</button>
+      </div>
+    </div>
+
+    <!-- ====== 鍵盤 ====== -->
+    <div class="table-area">
+      <div class="table-grid" id="tableGrid"></div>
+    </div>
+
+  </div>
+
+  <script>
+  /* ============================================================
+     元素資料（簡化到教學常用 + 少量擴充）
+     ============================================================ */
+  const ALL_ELEMENTS = [
+    /* period 1 */
+    {num:1,  symbol:"H",  nameZh:"氫",  period:1, group:1},
+    {num:2,  symbol:"He", nameZh:"氦",  period:1, group:18},
+
+    /* period 2 */
+    {num:3,  symbol:"Li", nameZh:"鋰",  period:2, group:1},
+    {num:4,  symbol:"Be", nameZh:"鈹",  period:2, group:2},
+    {num:5,  symbol:"B",  nameZh:"硼",  period:2, group:13},
+    {num:6,  symbol:"C",  nameZh:"碳",  period:2, group:14},
+    {num:7,  symbol:"N",  nameZh:"氮",  period:2, group:15},
+    {num:8,  symbol:"O",  nameZh:"氧",  period:2, group:16},
+    {num:9,  symbol:"F",  nameZh:"氟",  period:2, group:17},
+    {num:10, symbol:"Ne", nameZh:"氖",  period:2, group:18},
+
+    /* period 3 */
+    {num:11, symbol:"Na", nameZh:"鈉",  period:3, group:1},
+    {num:12, symbol:"Mg", nameZh:"鎂",  period:3, group:2},
+    {num:13, symbol:"Al", nameZh:"鋁",  period:3, group:13},
+    {num:14, symbol:"Si", nameZh:"矽",  period:3, group:14},
+    {num:15, symbol:"P",  nameZh:"磷",  period:3, group:15},
+    {num:16, symbol:"S",  nameZh:"硫",  period:3, group:16},
+    {num:17, symbol:"Cl", nameZh:"氯",  period:3, group:17},
+    {num:18, symbol:"Ar", nameZh:"氬",  period:3, group:18},
+
+    /* period 4 */
+    {num:19, symbol:"K",  nameZh:"鉀",  period:4, group:1},
+    {num:20, symbol:"Ca", nameZh:"鈣",  period:4, group:2},
+    {num:21, symbol:"Sc", nameZh:"鈧",  period:4, group:3},
+    {num:22, symbol:"Ti", nameZh:"鈦",  period:4, group:4},
+    {num:23, symbol:"V",  nameZh:"釩",  period:4, group:5},
+    {num:24, symbol:"Cr", nameZh:"鉻",  period:4, group:6},
+    {num:25, symbol:"Mn", nameZh:"錳",  period:4, group:7},
+    {num:26, symbol:"Fe", nameZh:"鐵",  period:4, group:8},
+    {num:27, symbol:"Co", nameZh:"鈷",  period:4, group:9},
+    {num:28, symbol:"Ni", nameZh:"鎳",  period:4, group:10},
+    {num:29, symbol:"Cu", nameZh:"銅",  period:4, group:11},
+    {num:30, symbol:"Zn", nameZh:"鋅",  period:4, group:12},
+    {num:31, symbol:"Ga", nameZh:"鎵",  period:4, group:13},
+    {num:32, symbol:"Ge", nameZh:"鍺",  period:4, group:14},
+    {num:33, symbol:"As", nameZh:"砷",  period:4, group:15},
+    {num:34, symbol:"Se", nameZh:"硒",  period:4, group:16},
+    {num:35, symbol:"Br", nameZh:"溴",  period:4, group:17},
+    {num:36, symbol:"Kr", nameZh:"氪",  period:4, group:18},
+
+    /* period 5 */
+    {num:37, symbol:"Rb", nameZh:"銣", period:5, group:1},
+    {num:38, symbol:"Sr", nameZh:"鍶", period:5, group:2},
+    {num:39, symbol:"Y",  nameZh:"釔", period:5, group:3},
+    {num:40, symbol:"Zr", nameZh:"鋯", period:5, group:4},
+    {num:41, symbol:"Nb", nameZh:"鈮", period:5, group:5},
+    {num:42, symbol:"Mo", nameZh:"鉬", period:5, group:6},
+    {num:43, symbol:"Tc", nameZh:"鍀", period:5, group:7},
+    {num:44, symbol:"Ru", nameZh:"釕", period:5, group:8},
+    {num:45, symbol:"Rh", nameZh:"銠", period:5, group:9},
+    {num:46, symbol:"Pd", nameZh:"鈀", period:5, group:10},
+    {num:47, symbol:"Ag", nameZh:"銀", period:5, group:11},
+    {num:48, symbol:"Cd", nameZh:"鎘", period:5, group:12},
+    {num:49, symbol:"In", nameZh:"銦", period:5, group:13},
+    {num:50, symbol:"Sn", nameZh:"錫", period:5, group:14},
+    {num:51, symbol:"Sb", nameZh:"銻", period:5, group:15},
+    {num:52, symbol:"Te", nameZh:"碲", period:5, group:16},
+    {num:53, symbol:"I",  nameZh:"碘", period:5, group:17},
+    {num:54, symbol:"Xe", nameZh:"氙", period:5, group:18},
+
+    /* period 6 */
+    {num:55, symbol:"Cs", nameZh:"銫", period:6, group:1},
+    {num:56, symbol:"Ba", nameZh:"鋇", period:6, group:2},
+    {num:57, symbol:"La", nameZh:"鑭", period:6, group:3},
+    {num:74, symbol:"W",  nameZh:"鎢", period:6, group:6},
+    {num:78, symbol:"Pt", nameZh:"鉑", period:6, group:10},
+    {num:79, symbol:"Au", nameZh:"金", period:6, group:11},
+    {num:80, symbol:"Hg", nameZh:"汞", period:6, group:12},
+
+    /* period 7 （示意，未全列） */
+    {num:86, symbol:"Rn", nameZh:"氡", period:7, group:18}
+  ];
+
+  /* ===== 國中題庫（30 題左右） ===== */
+  const JUNIOR_POOL = [
+    1,2,
+    3,4,5,6,7,8,9,10,
+    11,12,13,14,15,16,17,18,
+    19,20,
+    26,29,30,47,50,53
+  ];
+
+  /* ===== 高中題庫（再加一些） ===== */
+  const SENIOR_POOL = [
+    ...JUNIOR_POOL,
+    21,22,23,24,25,27,28,31,32,33,34,35,36,
+    37,38,39,40,41,42,44,45,46,48,49,51,52,54,
+    55,56,57,74,78,79,80
+  ];
+
+  /* ===== 全元素：用現有資料全部 ===== */
+  const FULL_POOL = ALL_ELEMENTS.map(e => e.num);
+
+  function getPoolByRange(range) {
+    let nums;
+    if (range === "junior") nums = JUNIOR_POOL;
+    else if (range === "senior") nums = SENIOR_POOL;
+    else nums = FULL_POOL;
+
+    return ALL_ELEMENTS.filter(e => nums.includes(e.num));
+  }
+
+  /* ===== 建立鍵盤（只顯示符號） ===== */
+  const tableGrid = document.getElementById("tableGrid");
+
+  function setupTableGrid(pool) {
+    tableGrid.innerHTML = "";
+    const map = {};
+    pool.forEach(e => {
+      map[`${e.period}-${e.group}`] = e;
+    });
+
+    const rows = 7, cols = 18;
+    for (let r = 1; r <= rows; r++) {
+      for (let c = 1; c <= cols; c++) {
+        const key = `${r}-${c}`;
+        const cell = document.createElement("div");
+        cell.className = "element-cell";
+
+        const e = map[key];
+        if (e) {
+          cell.classList.add("has-element");
+          cell.dataset.symbol = e.symbol;
+          cell.textContent = e.symbol;
+          cell.addEventListener("click", () =>
+            handleCellClick(e.symbol, cell)
+          );
+        }
+        tableGrid.appendChild(cell);
+      }
+    }
+  }
+
+  /* ===== 遊戲狀態變數 ===== */
+  let running = false;
+  let petals = [];
+  let currentPool = [];
+
+  let score = 0;
+  let missCount = 0;
+  let missLimit = 0;
+
+  let lastTime = null;
+  let spawnTimer = 0;
+  let spawnInterval = 2500;
+  let fallBaseSpeed = 0.25;
+
+  const rangeSelect  = document.getElementById("rangeSelect");
+  const speedSelect  = document.getElementById("speedSelect");
+  const soundToggle  = document.getElementById("soundToggle");
+  const startBtn     = document.getElementById("startBtn");
+  const fallArea     = document.getElementById("fallArea");
+  const missBar      = document.getElementById("missBar");
+  const overlay      = document.getElementById("overlay");
+  const overlayStart = document.getElementById("overlayStart");
+  const scoreEl      = document.getElementById("score");
+  const missCountEl  = document.getElementById("missCount");
+  const missLimitEl  = document.getElementById("missLimit");
+
+  /* ===== 錯誤球 UI ===== */
+  function createMissDots() {
+    missBar.innerHTML = `<span style="color:#b00020;">錯誤球：</span>`;
+    for (let i = 0; i < missLimit; i++) {
+      const dot = document.createElement("div");
+      dot.className = "miss-dot";
+      missBar.appendChild(dot);
+    }
+  }
+
+  function updateMissDots() {
+    const dots = missBar.querySelectorAll(".miss-dot");
+    dots.forEach((dot, idx) => {
+      if (idx < missCount) dot.classList.add("used");
+      else dot.classList.remove("used");
+    });
+  }
+
+  /* ===== 錯誤上限依範圍 ===== */
+  function setupMissLimitByRange(range) {
+    if (range === "junior") missLimit = 15;
+    else if (range === "senior") missLimit = 12;
+    else missLimit = 10;
+    missLimitEl.textContent = missLimit;
+    createMissDots();
+    updateMissDots();
+  }
+
+  /* ===== 速度設定 ===== */
+  function setupSpeedBySelect(speedValue) {
+    if (speedValue === "slow") {
+      spawnInterval = 3000;
+      fallBaseSpeed = 0.22;
+    } else if (speedValue === "fast") {
+      spawnInterval = 1900;
+      fallBaseSpeed = 0.30;
+    } else {
+      spawnInterval = 2400;
+      fallBaseSpeed = 0.26;
+    }
+  }
+
+  /* ===== 重設遊戲 ===== */
+  function resetGame() {
+    const rangeValue = rangeSelect.value;
+    const speedValue = speedSelect.value;
+
+    petals.forEach(p => p.el.remove());
+    petals = [];
+
+    currentPool = getPoolByRange(rangeValue);
+    setupTableGrid(currentPool);
+
+    setupMissLimitByRange(rangeValue);
+    setupSpeedBySelect(speedValue);
+
+    score = 0;
+    missCount = 0;
+    scoreEl.textContent = "0";
+    missCountEl.textContent = "0";
+
+    spawnTimer = 0;
+    lastTime = null;
+  }
+
+  function randomFromPool() {
+    if (!currentPool.length) return null;
+    const idx = Math.floor(Math.random() * currentPool.length);
+    return currentPool[idx];
+  }
+
+  /* ===== 生成掉落球 ===== */
+  function spawnPetal() {
+    const e = randomFromPool();
+    if (!e) return;
+
+    const rect = fallArea.getBoundingClientRect();
+    const x = Math.random() * (rect.width - 60) + 10;
+
+    const el = document.createElement("div");
+    el.className = "fall-petal";
+    el.style.left = x + "px";
+    el.style.top = "-60px";
+
+    el.innerHTML = `
+      <div>${e.nameZh}</div>
+      <div class="fall-num">${e.num}</div>
+    `;
+
+    fallArea.appendChild(el);
+
+    petals.push({
+      symbol: e.symbol,
+      x,
+      y: -60,
+      speed: fallBaseSpeed + Math.random() * 0.10,
+      sway: Math.random() * Math.PI * 2,
+      el
+    });
+  }
+
+  /* ===== 點擊鍵盤 ===== */
+  function handleCellClick(symbol, cellEl) {
+    if (!running) return;
+
+    let hit = 0;
+    const remain = [];
+    for (const p of petals) {
+      if (p.symbol === symbol) {
+        hit++;
+        p.el.remove();
+      } else {
+        remain.push(p);
+      }
+    }
+    petals = remain;
+
+    if (hit > 0) {
+      score += hit;
+      scoreEl.textContent = String(score);
+      flashCell(cellEl, true);
+      playSound("correct");
+    } else {
+      flashCell(cellEl, false);
+      playSound("wrong");
+    }
+  }
+
+  function flashCell(cell, ok) {
+    cell.classList.remove("correct", "wrong");
+    void cell.offsetWidth;
+    cell.classList.add(ok ? "correct" : "wrong");
+    setTimeout(() => {
+      cell.classList.remove("correct", "wrong");
+    }, 350);
+  }
+
+  /* ===== 掉到底部 ===== */
+  function addMiss() {
+    missCount++;
+    missCountEl.textContent = String(missCount);
+    updateMissDots();
+    if (missCount >= missLimit) {
+      endGame();
+    }
+  }
+
+  /* ===== 遊戲結束 ===== */
+  function endGame() {
+    running = false;
+    startBtn.disabled = false;
+    overlay.style.display = "flex";
+    overlay.querySelector("h1").textContent = "遊戲結束";
+    overlay.querySelector("p").textContent =
+      `你的得分是 ${score} 分，錯誤球已達上限。`;
+    playSound("end");
+  }
+
+  /* ===== 主迴圈 ===== */
+  function gameLoop(timestamp) {
+    if (!running) return;
+    if (!lastTime) lastTime = timestamp;
+    const dt = timestamp - lastTime;
+    lastTime = timestamp;
+
+    spawnTimer += dt;
+    const factor = Math.min(1.7, 1 + score * 0.012);
+    if (spawnTimer >= spawnInterval / factor) {
+      spawnPetal();
+      spawnTimer = 0;
+    }
+
+    const rect = fallArea.getBoundingClientRect();
+    const limitY = rect.height - 45;
+
+    const alive = [];
+    for (const p of petals) {
+      p.y += p.speed * dt * 0.05;
+      p.sway += 0.015 * dt;
+
+      const swayX = Math.sin(p.sway) * 8;
+      p.el.style.top = p.y + "px";
+      p.el.style.left = (p.x + swayX) + "px";
+
+      if (p.y >= limitY) {
+        p.el.remove();
+        addMiss();
+      } else {
+        alive.push(p);
+      }
+    }
+    petals = alive;
+
+    if (running) requestAnimationFrame(gameLoop);
+  }
+
+  /* ===== 開始遊戲 ===== */
+  function startGame() {
+    resetGame();
+    running = true;
+    overlay.style.display = "none";
+    startBtn.disabled = true;
+    requestAnimationFrame(gameLoop);
+  }
+
+  /* ===== 音效 ===== */
+  const soundEnabled = { value: true };
+  const sounds = {
+    correct: new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjMzLjEwNAAAAAAAAAAAAAAA//tQxAADB8AhWgAAAArwA8BCgACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA="),
+    wrong: new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjMzLjEwNAAAAAAAAAAAAAAA//tQxAADB8AhWgAAAEHwA8BCgACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA="),
+    end: new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjMzLjEwNAAAAAAAAAAAAAAA//tQxAADB8AhWgAAAFHwA8BCgACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA=")
+  };
+  Object.values(sounds).forEach(s => s.volume = 0.35);
+
+  function playSound(type) {
+    if (!soundEnabled.value) return;
+    const s = sounds[type];
+    if (!s) return;
+    s.currentTime = 0;
+    s.play();
+  }
+
+  soundToggle.addEventListener("click", () => {
+    soundEnabled.value = !soundEnabled.value;
+    soundToggle.classList.toggle("active", soundEnabled.value);
+    soundToggle.textContent = soundEnabled.value ? "開" : "關";
+  });
+
+  startBtn.addEventListener("click", startGame);
+  overlayStart.addEventListener("click", startGame);
+
+  /* 初始畫面：先畫出國中模式鍵盤 */
+  resetGame();
+
+  </script>
+</body>
+</html>

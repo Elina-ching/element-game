@@ -177,6 +177,20 @@
       font-size: 14px;
       cursor: pointer;
     }
+/* ===== 手機版保持 18 欄，但可左右滑動 ===== */
+.table-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: #c7b6ff;
+  border-radius: 4px;
+}
 
     /* ========= 週期表鍵盤 ========= */
     .table-area {
@@ -281,8 +295,11 @@
 
     <!-- ====== 鍵盤 ====== -->
     <div class="table-area">
-      <div class="table-grid" id="tableGrid"></div>
-    </div>
+  <div class="table-wrapper">
+    <div class="table-grid" id="tableGrid"></div>
+  </div>
+</div>
+
 
   </div>
   <script>
@@ -716,4 +733,5 @@
   </script>
 </body>
 </html>
+
 

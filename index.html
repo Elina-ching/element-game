@@ -86,7 +86,6 @@
       font-size: 14px;
       cursor: pointer;
     }
-
     /* ========= 掉落區 ========= */
     .fall-area {
       position: relative;
@@ -228,7 +227,6 @@
       <div class="title">元素小花雨 V3.1</div>
       <div class="subtitle">國中／高中／全元素 + 音效版</div>
     </div>
-
     <!-- ====== 學習範圍 ====== -->
     <div class="select-row">
       <span>學習範圍：</span>
@@ -287,7 +285,6 @@
     </div>
 
   </div>
-
   <script>
   /* ============================================================
      元素資料（簡化到教學常用 + 少量擴充）
@@ -340,7 +337,7 @@
     /* period 5 */
     {num:37, symbol:"Rb", nameZh:"銣", period:5, group:1},
     {num:38, symbol:"Sr", nameZh:"鍶", period:5, group:2},
-    {num:39, symbol:"Y",  nameZh:"釔", period:5, group:3},
+    {num:39,  symbol:"Y", nameZh:"釔", period:5, group:3},
     {num:40, symbol:"Zr", nameZh:"鋯", period:5, group:4},
     {num:41, symbol:"Nb", nameZh:"鈮", period:5, group:5},
     {num:42, symbol:"Mo", nameZh:"鉬", period:5, group:6},
@@ -366,11 +363,11 @@
     {num:79, symbol:"Au", nameZh:"金", period:6, group:11},
     {num:80, symbol:"Hg", nameZh:"汞", period:6, group:12},
 
-    /* period 7 （示意，未全列） */
+    /* period 7 */
     {num:86, symbol:"Rn", nameZh:"氡", period:7, group:18}
   ];
 
-  /* ===== 國中題庫（30 題左右） ===== */
+  /* ===== 國中題庫 ===== */
   const JUNIOR_POOL = [
     1,2,
     3,4,5,6,7,8,9,10,
@@ -379,7 +376,7 @@
     26,29,30,47,50,53
   ];
 
-  /* ===== 高中題庫（再加一些） ===== */
+  /* ===== 高中題庫 ===== */
   const SENIOR_POOL = [
     ...JUNIOR_POOL,
     21,22,23,24,25,27,28,31,32,33,34,35,36,
@@ -387,7 +384,7 @@
     55,56,57,74,78,79,80
   ];
 
-  /* ===== 全元素：用現有資料全部 ===== */
+  /* ===== 全元素 ===== */
   const FULL_POOL = ALL_ELEMENTS.map(e => e.num);
 
   function getPoolByRange(range) {
@@ -395,11 +392,10 @@
     if (range === "junior") nums = JUNIOR_POOL;
     else if (range === "senior") nums = SENIOR_POOL;
     else nums = FULL_POOL;
-
     return ALL_ELEMENTS.filter(e => nums.includes(e.num));
   }
 
-  /* ===== 建立鍵盤（只顯示符號） ===== */
+  /* ========= 建立鍵盤 ========= */
   const tableGrid = document.getElementById("tableGrid");
 
   function setupTableGrid(pool) {
@@ -429,7 +425,6 @@
       }
     }
   }
-
   /* ===== 遊戲狀態變數 ===== */
   let running = false;
   let petals = [];
@@ -613,7 +608,6 @@
       `你的得分是 ${score} 分，錯誤球已達上限。`;
     playSound("end");
   }
-
   /* ===== 主迴圈 ===== */
   function gameLoop(timestamp) {
     if (!running) return;
@@ -661,23 +655,53 @@
     requestAnimationFrame(gameLoop);
   }
 
-  /* ===== 音效 ===== */
+  /* ===== 音效（合併後最終版） ===== */
   const soundEnabled = { value: true };
-  const sounds = {
-    correct: new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjMzLjEwNAAAAAAAAAAAAAAA//tQxAADB8AhWgAAAArwA8BCgACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA="),
-    wrong: new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjMzLjEwNAAAAAAAAAAAAAAA//tQxAADB8AhWgAAAEHwA8BCgACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA="),
-    end: new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjMzLjEwNAAAAAAAAAAAAAAA//tQxAADB8AhWgAAAFHwA8BCgACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA=")
-  };
-  Object.values(sounds).forEach(s => s.volume = 0.35);
 
   function playSound(type) {
     if (!soundEnabled.value) return;
-    const s = sounds[type];
-    if (!s) return;
-    s.currentTime = 0;
-    s.play();
+
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    if (type === "correct") {
+        // 答對：亮亮亮
+        osc.frequency.value = 800;
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+    }
+
+    if (type === "wrong") {
+        // 答錯：嗶嗶嗶
+        osc.frequency.value = 220;
+        gain.gain.setValueAtTime(0.4, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+    }
+
+    if (type === "drop") {
+        // 掉到地板：噗通
+        osc.frequency.setValueAtTime(160, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 0.25);
+        gain.gain.setValueAtTime(0.4, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+    }
+
+    if (type === "end") {
+        // 遊戲結束：低沉一下
+        osc.frequency.value = 140;
+        gain.gain.setValueAtTime(0.35, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    }
+
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.3);
   }
 
+  /* ===== 音效開關 ===== */
   soundToggle.addEventListener("click", () => {
     soundEnabled.value = !soundEnabled.value;
     soundToggle.classList.toggle("active", soundEnabled.value);
@@ -687,44 +711,8 @@
   startBtn.addEventListener("click", startGame);
   overlayStart.addEventListener("click", startGame);
 
-  /* 初始畫面：先畫出國中模式鍵盤 */
+  /* ===== 初始鍵盤展示 ===== */
   resetGame();
-// 建立一個音效播放器
-function playSound(type) {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-
-    if (type === "correct") {
-        // 答對：卡通亮亮亮
-        osc.frequency.value = 800;
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
-    }
-
-    if (type === "wrong") {
-        // 答錯：嗶嗶嗶
-        osc.frequency.value = 200;
-        gain.gain.setValueAtTime(0.4, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-    }
-
-    if (type === "drop") {
-        // 掉地板：噗噗通
-        osc.frequency.setValueAtTime(180, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 0.25);
-        gain.gain.setValueAtTime(0.4, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
-    }
-
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.3);
-}
-
-
   </script>
 </body>
 </html>
